@@ -13,55 +13,54 @@ let axios = require("axios");
 let searchItem = process.argv.slice(3).join("+");
 let omdbURL = `http://www.omdbapi.com/?apikey=trilogy&t= + ${searchItem}`;
 
-// let category = process.argv[2];
+let category = process.argv[2];
 
-spotify
-  .search({ type: "track", query: "Fireflies" })
-  .then(function(response) {
-    console.log(response.tracks.items[0].album;
-  })
-  .catch(function(err) {
-    console.log(err);
-  });
+switch (category) {
+  case "movie-this":
+    axios
+      .get(omdbURL)
+      .then(function(response) {
+        console.log("Searching for movies...\n");
 
-// switch (category) {
-//   case "movie-this":
-//     axios
-//       .get(omdbURL)
-//       .then(function(response) {
-//         console.log("Searching for movies...\n");
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~");
+        console.log("Movie Title: " + response.data.Title);
+        console.log("Year Made: " + response.data.Year);
+        console.log("IMDB Rating: " + response.data.Ratings[0].Value);
+        console.log("Rotten Tomato Rating: " + response.data.Ratings[1].Value);
+        console.log("Country of Production: " + response.data.Country);
+        console.log("Language of Movie: " + response.data.Language);
+        console.log("Actors in Movie: " + response.data.Actors);
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~\n");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    break;
 
-//         console.log("~~~~~~~~~~~~~~~~~~~~~~~");
-//         console.log("Movie Title: " + response.data.Title);
-//         console.log("Year Made: " + response.data.Year);
-//         console.log("IMDB Rating: " + response.data.Ratings[0].Value);
-//         console.log("Rotten Tomato Rating: " + response.data.Ratings[1].Value);
-//         console.log("Country of Production: " + response.data.Country);
-//         console.log("Language of Movie: " + response.data.Language);
-//         console.log("Actors in Movie: " + response.data.Actors);
-//         console.log("~~~~~~~~~~~~~~~~~~~~~~~\n");
-//       })
-//       .catch(function(error) {
-//         console.log(error);
-//       });
-//     break;
+  case "spotify-this-song":
+    console.log("... Searching up songs ...");
+    spotify
+      .search({ type: "track", query: `${searchItem}` })
+      .then(function(response) {
+        console.log("\n~~~~~~~~~~~~~~~~~~");
+        console.log("Artist: " + response.tracks.items[0].album.artists.name);
+        console.log("Song: " + response.tracks.items[0].name);
+        console.log(
+          "URL: " + response.tracks.items[0].album.external_urls.spotify
+        );
+        console.log("Album: " + response.tracks.items[0].album.name);
+        console.log("~~~~~~~~~~~~~~~~~~\n");
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
 
-//   case "spotify-this-song":
-//     console.log("... Searching up songs ...");
-//     spotify
-//       .search({ type: "track", query: "All the Small Things" })
-//       .then(function(response) {
-//         console.log(response);
-//       })
-//       .catch(function(err) {
-//         console.log(err);
-//       });
-//     break;
+    break;
 
-//   case "concert-this":
-//     break;
+  case "concert-this":
+    break;
 
-//   case "do-what-it-says":
-//     break;
-//   default:
-// }
+  case "do-what-it-says":
+    break;
+  default:
+}
