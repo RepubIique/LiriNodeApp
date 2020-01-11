@@ -1,17 +1,17 @@
 // Spotify
-// var keys = require("./keys");
+require("dotenv").config();
+var keys = require("./keys.js");
 let Spotify = require("node-spotify-api");
-// let spotify = new Spotify(keys.spotify);
-// require("dotenv").config();
-var spotify = new Spotify({
-  id: "cc70c7af164a4693996353e56e2182e3",
-  secret: "cb0c2ea60dc144158e48062355dc0a1b"
-});
+let spotify = new Spotify(keys.spotify);
+let fs = require("fs");
 
 //OMDB
 let axios = require("axios");
 let searchItem = process.argv.slice(3).join("+");
 let omdbURL = `http://www.omdbapi.com/?apikey=trilogy&t= + ${searchItem}`;
+
+//Concert
+let concertURL = `https://rest.bandsintown.com/artists/${searchItem}/events?app_id=codingbootcamp`;
 
 let category = process.argv[2];
 
@@ -58,9 +58,25 @@ switch (category) {
     break;
 
   case "concert-this":
+    axios.get(concertURL).then(function(response) {
+      console.log("\n~~~~~~~~~~~~~~~~~~");
+      console.log("Name of the Venue: " + response.data[0].venue.name);
+      console.log("Venue Location: " + response.data[0].venue.city);
+      console.log("Date of Event: " + response.data[0].datetime);
+      console.log("~~~~~~~~~~~~~~~~~~\n");
+    });
+
     break;
 
   case "do-what-it-says":
+    fs.readFile("./random.txt", "utf8", (err, data) => {
+      if (err) throw err;
+      data = data.split(" ");
+      cmd = data[0];
+      song = data.splice(1, data.length).join(" ");
+      console.log(song);
+    });
+
     break;
   default:
 }
