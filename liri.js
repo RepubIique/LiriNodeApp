@@ -9,7 +9,7 @@ let fs = require("fs");
 let axios = require("axios");
 let searchItem = process.argv.slice(3).join("+");
 let omdbURL = `http://www.omdbapi.com/?apikey=trilogy&t= + ${searchItem}`;
-
+let omdbURLDefault = `http://www.omdbapi.com/?apikey=trilogy&t=mr+nobody`;
 //Concert
 let concertURL = `https://rest.bandsintown.com/artists/${searchItem}/events?app_id=codingbootcamp`;
 
@@ -33,6 +33,21 @@ switch (category) {
         console.log("~~~~~~~~~~~~~~~~~~~~~~~\n");
       })
       .catch(function(error) {
+        axios.get(omdbURLDefault).then(function(response) {
+          console.log("\nCan't find queried movie, defaulting to Mr.Nobody");
+
+          console.log("~~~~~~~~~~~~~~~~~~~~~~~");
+          console.log("Movie Title: " + response.data.Title);
+          console.log("Year Made: " + response.data.Year);
+          console.log("IMDB Rating: " + response.data.Ratings[0].Value);
+          console.log(
+            "Rotten Tomato Rating: " + response.data.Ratings[1].Value
+          );
+          console.log("Country of Production: " + response.data.Country);
+          console.log("Language of Movie: " + response.data.Language);
+          console.log("Actors in Movie: " + response.data.Actors);
+          console.log("~~~~~~~~~~~~~~~~~~~~~~~\n");
+        });
         console.log(error);
       });
     break;
@@ -52,6 +67,21 @@ switch (category) {
         console.log("~~~~~~~~~~~~~~~~~~\n");
       })
       .catch(function(err) {
+        spotify
+          .search({ type: "track", query: "The Sign Ace of Base" })
+          .then(function(response) {
+            console.log("\nCan't find queried song... Defaulting to The Sign");
+            console.log("\n~~~~~~~~~~~~~~~~~~");
+            console.log(
+              "Artist: " + response.tracks.items[0].album.artists.name
+            );
+            console.log("Song: " + response.tracks.items[0].name);
+            console.log(
+              "URL: " + response.tracks.items[0].album.external_urls.spotify
+            );
+            console.log("Album: " + response.tracks.items[0].album.name);
+            console.log("~~~~~~~~~~~~~~~~~~\n");
+          });
         console.log(err);
       });
 
@@ -75,6 +105,7 @@ switch (category) {
       cmd = data[0];
       song = data.splice(1, data.length).join(" ");
       console.log(song);
+      //
     });
 
     break;
